@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '../services/authService'
 
-const fullName = ref('')
+const username = ref('')
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -11,10 +11,12 @@ const router = useRouter()
 
 const handleRegister = async () => {
   try {
-    await register(fullName.value, email.value, password.value)
+    await register(username.value, email.value, password.value)
+    localStorage.setItem('user_name', username.value)
     router.push('/login')
   } catch (err) {
-    error.value = err.response?.data?.message || 'Failed to register'
+    error.value =
+      err.response?.data?.message || err.response?.data?.error || 'Failed to register'
   }
 }
 </script>
@@ -23,7 +25,7 @@ const handleRegister = async () => {
   <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
     <h2 class="text-xl font-bold mb-4">Daftar Akun Baru</h2>
     <form @submit.prevent="handleRegister" class="space-y-4">
-      <input v-model="fullName" type="text" placeholder="Nama Lengkap"
+      <input v-model="username" type="text" placeholder="Username"
         class="w-full border p-2 rounded" />
       <input v-model="email" type="email" placeholder="Email"
         class="w-full border p-2 rounded" />
